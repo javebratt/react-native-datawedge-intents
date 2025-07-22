@@ -105,10 +105,10 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_ENUMERATEDLISET);
-        reactContext.registerReceiver(myEnumerateScannersBroadcastReceiver, filter);
+        reactContext.registerReceiver(myEnumerateScannersBroadcastReceiver, filter, Context.RECEIVER_EXPORTED);
 	    if (this.registeredAction != null)
           registerReceiver(this.registeredAction, this.registeredCategory);
-          
+
     }
 
     @Override
@@ -164,8 +164,8 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
         Log.v(TAG, "Sending Intent with action: " + action + ", parameter: [" + parameterValue + "]");
         //  Some DW API calls use a different paramter name, abstract this from the caller.
         String parameterKey = EXTRA_PARAMETER;
-        if (action.equalsIgnoreCase(ACTION_SETDEFAULTPROFILE) || 
-            action.equalsIgnoreCase(ACTION_RESETDEFAULTPROFILE) || 
+        if (action.equalsIgnoreCase(ACTION_SETDEFAULTPROFILE) ||
+            action.equalsIgnoreCase(ACTION_RESETDEFAULTPROFILE) ||
             action.equalsIgnoreCase(ACTION_SWITCHTOPROFILE))
                 parameterKey = EXTRA_PROFILENAME;
 
@@ -215,7 +215,7 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
                 i.putExtra(key, valueStr);
             }
         }
-        this.reactContext.sendBroadcast(i);    
+        this.reactContext.sendBroadcast(i);
     }
 
     //  Credit: https://github.com/facebook/react-native/issues/4655
@@ -357,7 +357,7 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
         filter.addAction(action);
         if (category != null && category.length() > 0)
           filter.addCategory(category);
-        this.reactContext.registerReceiver(scannedDataBroadcastReceiver, filter);
+        this.reactContext.registerReceiver(scannedDataBroadcastReceiver, filter, Context.RECEIVER_EXPORTED);
     }
 
     @ReactMethod
@@ -389,7 +389,7 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
                 }
             }
         }
-        this.reactContext.registerReceiver(genericReceiver, filter);
+        this.reactContext.registerReceiver(genericReceiver, filter, Context.RECEIVER_EXPORTED);
     }
 
     private void unregisterReceivers() {
@@ -410,8 +410,8 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
 
     //  Broadcast receiver for the response to the Enumerate Scanner API
     //  THIS METHOD IS DEPRECATED, you should enumerate scanners as shown in https://github.com/darryncampbell/DataWedgeReactNative/blob/master/App.js
-    public BroadcastReceiver myEnumerateScannersBroadcastReceiver = new BroadcastReceiver() 
-    {    
+    public BroadcastReceiver myEnumerateScannersBroadcastReceiver = new BroadcastReceiver()
+    {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.v(TAG, "Received Broadcast from DataWedge API - Enumerate Scanners");
@@ -419,11 +419,11 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
         }
     };
 
-    //  Broadcast receiver for the DataWedge intent being sent from Datawedge.  
+    //  Broadcast receiver for the DataWedge intent being sent from Datawedge.
     //  Note: DW must be configured to send broadcast intents
     //  THIS METHOD IS DEPRECATED, you should enumerate scanners as shown in https://github.com/darryncampbell/DataWedgeReactNative/blob/master/App.js
-    public BroadcastReceiver scannedDataBroadcastReceiver = new BroadcastReceiver() 
-    {    
+    public BroadcastReceiver scannedDataBroadcastReceiver = new BroadcastReceiver()
+    {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.v(TAG, "Received Broadcast from DataWedge API - Scanner");
@@ -441,7 +441,7 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
         }
     };
 
-    //  Sending events to JavaScript as defined in the native-modules documentation.  
+    //  Sending events to JavaScript as defined in the native-modules documentation.
     //  Note: Callbacks can only be invoked a single time so are not a suitable interface for barcode scans.
     private void sendEvent(ReactContext reactContext,
                        String eventName,
@@ -451,8 +451,8 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
 
     //  Credit: http://stackoverflow.com/questions/28083430/communication-between-broadcastreceiver-and-activity-android#30964385
     @Override
-    public void update(Observable observable, Object data) 
-    {            
+    public void update(Observable observable, Object data)
+    {
       Intent intent = (Intent)data;
 
       if (intent.hasExtra("v2API"))
@@ -466,13 +466,13 @@ public class RNDataWedgeIntentsModule extends ReactContextBaseJavaModule impleme
                   intentBundle.remove(key);
               }
           }
-          
+
           WritableMap map = Arguments.fromBundle(intentBundle);
           sendEvent(this.reactContext, "datawedge_broadcast_intent", map);
       }
 
       String action = intent.getAction();
-      if (action.equals(ACTION_ENUMERATEDLISET)) 
+      if (action.equals(ACTION_ENUMERATEDLISET))
       {
           Bundle b = intent.getExtras();
           String[] scanner_list = b.getStringArray(KEY_ENUMERATEDSCANNERLIST);
