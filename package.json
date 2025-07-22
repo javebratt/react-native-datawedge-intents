@@ -1,8 +1,9 @@
 {
-  "name": "@javebratt/react-native-datawedge-intents",
+  "name": "@jvergarae/react-native-datawedge-intents",
   "version": "0.0.1",
   "description": "Forked version of react-native-datawedge-intents: React Native Android module to interface with Zebra's DataWedge using Android Intents to control the barcode scanner and retrieve scanned data",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
